@@ -1,0 +1,89 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "A user of the platform (buyer, seller, or admin)",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "role": { "type": "string", "enum": ["buyer", "seller", "admin"] },
+        "name": { "type": "string" },
+        "phone": { "type": "string" },
+        "email": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "role", "name", "createdAt"]
+    },
+    "Shop": {
+      "title": "Shop",
+      "description": "A seller's shop profile",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "ownerId": { "type": "string" },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "bannerUrl": { "type": "string" },
+        "logoUrl": { "type": "string" },
+        "status": { "type": "string", "enum": ["pending", "approved", "rejected"] },
+        "district": { "type": "string" },
+        "deliveryRadius": { "type": "number" },
+        "tazkiraUrl": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "ownerId", "name", "status", "district", "createdAt"]
+    },
+    "Product": {
+      "title": "Product",
+      "description": "A product listed by a shop",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "shopId": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "price": { "type": "number" },
+        "stock": { "type": "number" },
+        "images": { "type": "array", "items": { "type": "string" } },
+        "category": { "type": "string" },
+        "status": { "type": "string", "enum": ["draft", "live"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "shopId", "title", "price", "stock", "category", "status", "createdAt"]
+    },
+    "Order": {
+      "title": "Order",
+      "description": "An order placed by a buyer",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "buyerId": { "type": "string" },
+        "shopId": { "type": "string" },
+        "items": { "type": "array" },
+        "total": { "type": "number" },
+        "status": { "type": "string", "enum": ["pending", "processing", "shipped", "delivered", "cancelled"] },
+        "shippingAddress": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "buyerId", "shopId", "items", "total", "status", "shippingAddress", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/User" },
+      "description": "User profiles"
+    },
+    "/shops/{shopId}": {
+      "schema": { "$ref": "#/entities/Shop" },
+      "description": "Shop profiles"
+    },
+    "/products/{productId}": {
+      "schema": { "$ref": "#/entities/Product" },
+      "description": "Products"
+    },
+    "/orders/{orderId}": {
+      "schema": { "$ref": "#/entities/Order" },
+      "description": "Orders"
+    }
+  }
+}

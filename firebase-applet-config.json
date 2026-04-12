@@ -1,0 +1,9 @@
+{
+  "apiKey": "PLACEHOLDER_API_KEY",
+  "authDomain": "bazar-af.firebaseapp.com",
+  "projectId": "bazar-af",
+  "storageBucket": "bazar-af.appspot.com",
+  "messagingSenderId": "PLACEHOLDER",
+  "appId": "PLACEHOLDER",
+  "firestoreDatabaseId": "(default)"
+}

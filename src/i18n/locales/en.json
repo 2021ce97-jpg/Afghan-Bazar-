@@ -1,0 +1,27 @@
+{
+  "common": {
+    "search": "Search products, shops...",
+    "cart": "Cart",
+    "login": "Login",
+    "signup": "Sign Up",
+    "shopSignup": "Shop Signup",
+    "categories": "Categories",
+    "allShops": "All Shops",
+    "language": "Language",
+    "currency": "Currency"
+  },
+  "home": {
+    "heroTitle": "Kabul's Trusted Local Marketplace",
+    "heroSubtitle": "Shop from your favorite local stores, delivered to your door.",
+    "topShops": "Top Shops in Kabul",
+    "featuredProducts": "Featured Products",
+    "viewAll": "View All"
+  },
+  "seller": {
+    "dashboard": "Seller Dashboard",
+    "products": "Products",
+    "orders": "Orders",
+    "revenue": "Revenue",
+    "add_product": "Add Product"
+  }
+}
