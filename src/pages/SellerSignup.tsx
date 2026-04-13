@@ -80,10 +80,20 @@ export default function SellerSignup() {
             <div>
               <label className="block text-sm font-medium mb-1">Category</label>
               <select className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
-                <option>Electronics</option>
-                <option>Clothing</option>
-                <option>Groceries</option>
-                <option>Home & Decor</option>
+                <option>Fashion & Clothing</option>
+                <option>Electronics & Gadgets</option>
+                <option>Groceries & Essentials</option>
+                <option>Pharmacy & Health</option>
+                <option>Beauty & Personal Care</option>
+                <option>Home & Kitchen</option>
+                <option>Jewelry & Accessories</option>
+                <option>Footwear</option>
+                <option>Mobile & Accessories</option>
+                <option>Furniture & Home Decor</option>
+                <option>Toys, Kids & Baby</option>
+                <option>Sports & Outdoors</option>
+                <option>Afghan Specialties</option>
+                <option>Tools & Hardware</option>
               </select>
             </div>
             <div>

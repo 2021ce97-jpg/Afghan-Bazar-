@@ -4,7 +4,7 @@ export const MOCK_SHOPS = [
     name: 'Rasool Zada Carpets', 
     image: 'https://picsum.photos/seed/carpets/800/600', 
     logo: 'https://picsum.photos/seed/logo1/200/200',
-    category: 'Home & Decor',
+    category: 'Furniture & Home Decor',
     district: 'Najeeb Zarab',
     description: 'Authentic Afghan handmade carpets and rugs.',
     rating: 4.8,
@@ -16,7 +16,7 @@ export const MOCK_SHOPS = [
     name: 'Parwan Fresh Groceries', 
     image: 'https://picsum.photos/seed/groceries/800/600', 
     logo: 'https://picsum.photos/seed/logo2/200/200',
-    category: 'Groceries',
+    category: 'Groceries & Essentials',
     district: 'Parwan',
     description: 'Fresh fruits, vegetables, and daily groceries delivered fast.',
     rating: 4.5,
@@ -28,7 +28,7 @@ export const MOCK_SHOPS = [
     name: 'Kabul Dry Fruits Bazaar', 
     image: 'https://picsum.photos/seed/dryfruits/800/600', 
     logo: 'https://picsum.photos/seed/logo3/200/200',
-    category: 'Food',
+    category: 'Afghan Specialties',
     district: 'Central Bazaar',
     description: 'Premium quality pistachios, almonds, saffron, and more.',
     rating: 4.9,
@@ -40,7 +40,7 @@ export const MOCK_SHOPS = [
     name: 'Chicken Street Fashion', 
     image: 'https://picsum.photos/seed/fashion/800/600', 
     logo: 'https://picsum.photos/seed/logo4/200/200',
-    category: 'Clothing',
+    category: 'Fashion & Clothing',
     district: 'Chicken Street',
     description: 'Traditional and modern Afghan clothing for men and women.',
     rating: 4.6,
@@ -52,7 +52,7 @@ export const MOCK_SHOPS = [
     name: 'Shar-e-Naw Mobiles', 
     image: 'https://picsum.photos/seed/mobiles/800/600', 
     logo: 'https://picsum.photos/seed/logo5/200/200',
-    category: 'Electronics',
+    category: 'Electronics & Gadgets',
     district: 'Shar-e-Naw',
     description: 'Latest smartphones, accessories, and repair services.',
     rating: 4.3,
@@ -64,7 +64,7 @@ export const MOCK_SHOPS = [
     name: 'Kabul Auto Parts', 
     image: 'https://picsum.photos/seed/autoparts/800/600', 
     logo: 'https://picsum.photos/seed/logo6/200/200',
-    category: 'Automotive',
+    category: 'Tools & Hardware',
     district: 'Industrial Area',
     description: 'Genuine spare parts for Toyota, Corolla, and more.',
     rating: 4.7,
@@ -81,7 +81,7 @@ export const MOCK_PRODUCTS = [
     price: 15000,
     stock: 5,
     image: 'https://picsum.photos/seed/rug1/800/800',
-    category: 'Home & Decor',
+    category: 'Furniture & Home Decor',
     variants: [
       { id: 'v1-1', size: '2x3m', price: 15000, stock: 5 },
       { id: 'v1-2', size: '3x4m', price: 25000, stock: 2 }
@@ -94,7 +94,7 @@ export const MOCK_PRODUCTS = [
     price: 2500,
     stock: 50,
     image: 'https://picsum.photos/seed/saffron/800/800',
-    category: 'Food',
+    category: 'Afghan Specialties',
     variants: [
       { id: 'v2-1', size: '5g', price: 2500, stock: 50 },
       { id: 'v2-2', size: '10g', price: 4800, stock: 30 },
@@ -108,7 +108,7 @@ export const MOCK_PRODUCTS = [
     price: 1200,
     stock: 120,
     image: 'https://picsum.photos/seed/pistachio/800/800',
-    category: 'Food'
+    category: 'Afghan Specialties'
   },
   {
     id: 'p4',
@@ -117,7 +117,7 @@ export const MOCK_PRODUCTS = [
     price: 3500,
     stock: 20,
     image: 'https://picsum.photos/seed/clothes1/800/800',
-    category: 'Clothing',
+    category: 'Fashion & Clothing',
     variants: [
       { id: 'v4-1', size: 'M', color: 'White', price: 3500, stock: 10 },
       { id: 'v4-2', size: 'L', color: 'White', price: 3500, stock: 5 },
@@ -132,7 +132,7 @@ export const MOCK_PRODUCTS = [
     price: 500,
     stock: 200,
     image: 'https://picsum.photos/seed/case/800/800',
-    category: 'Electronics',
+    category: 'Electronics & Gadgets',
     variants: [
       { id: 'v5-1', color: 'Clear', price: 500, stock: 100 },
       { id: 'v5-2', color: 'Black', price: 550, stock: 50 },
@@ -146,6 +146,6 @@ export const MOCK_PRODUCTS = [
     price: 450,
     stock: 30,
     image: 'https://picsum.photos/seed/pomegranate/800/800',
-    category: 'Groceries'
+    category: 'Groceries & Essentials'
   }
 ];

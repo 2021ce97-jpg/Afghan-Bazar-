@@ -4,9 +4,26 @@ import { Link } from 'react-router-dom';
 import { Card, CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { useDataStore } from '../store/useDataStore';
-import { CloudSun, DollarSign, Heart } from 'lucide-react';
+import { CloudSun, DollarSign, Heart, Shirt, Laptop, ShoppingBasket, HeartPulse, Sparkles, Home as HomeIcon, Gem, Footprints, Smartphone, Sofa, Baby, Dumbbell, Coffee, Wrench } from 'lucide-react';
 import { useWishlistStore } from '../store/useWishlistStore';
 import SEO from '../components/SEO';
+
+const CATEGORIES = [
+  { name: 'Fashion & Clothing', icon: Shirt, color: 'bg-pink-100 text-pink-600' },
+  { name: 'Electronics & Gadgets', icon: Laptop, color: 'bg-blue-100 text-blue-600' },
+  { name: 'Groceries & Essentials', icon: ShoppingBasket, color: 'bg-green-100 text-green-600' },
+  { name: 'Pharmacy & Health', icon: HeartPulse, color: 'bg-red-100 text-red-600' },
+  { name: 'Beauty & Personal Care', icon: Sparkles, color: 'bg-purple-100 text-purple-600' },
+  { name: 'Home & Kitchen', icon: HomeIcon, color: 'bg-orange-100 text-orange-600' },
+  { name: 'Jewelry & Accessories', icon: Gem, color: 'bg-yellow-100 text-yellow-600' },
+  { name: 'Footwear', icon: Footprints, color: 'bg-teal-100 text-teal-600' },
+  { name: 'Mobile & Accessories', icon: Smartphone, color: 'bg-indigo-100 text-indigo-600' },
+  { name: 'Furniture & Home Decor', icon: Sofa, color: 'bg-amber-100 text-amber-600' },
+  { name: 'Toys, Kids & Baby', icon: Baby, color: 'bg-rose-100 text-rose-600' },
+  { name: 'Sports & Outdoors', icon: Dumbbell, color: 'bg-cyan-100 text-cyan-600' },
+  { name: 'Afghan Specialties', icon: Coffee, color: 'bg-emerald-100 text-emerald-600' },
+  { name: 'Tools & Hardware', icon: Wrench, color: 'bg-slate-100 text-slate-600' },
+];
 
 export default function Home() {
   const { t } = useTranslation();
@@ -77,6 +94,37 @@ export default function Home() {
             <p className="text-sm text-green-800 font-medium">Exchange Rate (USD to AFN)</p>
             <p className="text-xl font-bold text-green-900">1 USD = 71.50 AFN</p>
           </div>
+        </div>
+      </section>
+
+      {/* Shop by Category */}
+      <section>
+        <div className="flex items-center justify-between mb-8">
+          <h2 className="text-2xl font-bold tracking-tight">Shop by Category</h2>
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-4">
+          {CATEGORIES.map((category, i) => {
+            const Icon = category.icon;
+            return (
+              <motion.div
+                key={category.name}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.05 }}
+              >
+                <Link to={`/shops?category=${encodeURIComponent(category.name)}`}>
+                  <Card className="hover:shadow-md transition-all hover:-translate-y-1 cursor-pointer h-full border-transparent hover:border-gray-200">
+                    <CardContent className="p-4 flex flex-col items-center justify-center text-center gap-3 h-full">
+                      <div className={`p-4 rounded-full ${category.color}`}>
+                        <Icon className="w-6 h-6" />
+                      </div>
+                      <span className="text-sm font-medium text-gray-800">{category.name}</span>
+                    </CardContent>
+                  </Card>
+                </Link>
+              </motion.div>
+            );
+          })}
         </div>
       </section>
 

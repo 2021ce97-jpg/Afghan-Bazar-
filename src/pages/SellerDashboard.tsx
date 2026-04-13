@@ -318,7 +318,28 @@ export default function SellerDashboard() {
                   </div>
                   <div className="space-y-2">
                     <label className="text-sm font-medium">Category</label>
-                    <Input value={editingProduct.category} onChange={e => setEditingProduct({...editingProduct, category: e.target.value})} required />
+                    <select 
+                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                      value={editingProduct.category} 
+                      onChange={e => setEditingProduct({...editingProduct, category: e.target.value})} 
+                      required
+                    >
+                      <option value="" disabled>Select a category</option>
+                      <option value="Fashion & Clothing">Fashion & Clothing</option>
+                      <option value="Electronics & Gadgets">Electronics & Gadgets</option>
+                      <option value="Groceries & Essentials">Groceries & Essentials</option>
+                      <option value="Pharmacy & Health">Pharmacy & Health</option>
+                      <option value="Beauty & Personal Care">Beauty & Personal Care</option>
+                      <option value="Home & Kitchen">Home & Kitchen</option>
+                      <option value="Jewelry & Accessories">Jewelry & Accessories</option>
+                      <option value="Footwear">Footwear</option>
+                      <option value="Mobile & Accessories">Mobile & Accessories</option>
+                      <option value="Furniture & Home Decor">Furniture & Home Decor</option>
+                      <option value="Toys, Kids & Baby">Toys, Kids & Baby</option>
+                      <option value="Sports & Outdoors">Sports & Outdoors</option>
+                      <option value="Afghan Specialties">Afghan Specialties</option>
+                      <option value="Tools & Hardware">Tools & Hardware</option>
+                    </select>
                   </div>
                   <div className="space-y-2">
                     <label className="text-sm font-medium">Price (AFN)</label>
@@ -343,6 +364,8 @@ export default function SellerDashboard() {
                       <th className="px-4 py-3">Category</th>
                       <th className="px-4 py-3">Price (AFN)</th>
                       <th className="px-4 py-3">Stock</th>
+                      <th className="px-4 py-3">Rating</th>
+                      <th className="px-4 py-3">Reviews</th>
                       <th className="px-4 py-3">Featured</th>
                       <th className="px-4 py-3">Action</th>
                     </tr>
@@ -365,9 +388,19 @@ export default function SellerDashboard() {
                           <span className={product.stock > 5 ? "text-green-600" : "text-red-600 font-bold"}>{product.stock}</span>
                         </td>
                         <td className="px-4 py-3">
+                          <div className="flex items-center gap-1">
+                            <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
+                            <span className="font-medium">{product.rating || 'N/A'}</span>
+                          </div>
+                        </td>
+                        <td className="px-4 py-3 text-gray-500">
+                          {product.reviews || 0}
+                        </td>
+                        <td className="px-4 py-3">
                           <button 
                             onClick={() => toggleFeatured(product)}
                             className={`p-1.5 rounded-full transition-colors ${product.isFeatured ? 'bg-amber-100 text-amber-600' : 'bg-gray-100 text-gray-400 hover:bg-gray-200'}`}
+                            title={product.isFeatured ? "Remove from featured" : "Mark as featured"}
                           >
                             <Star className={`w-4 h-4 ${product.isFeatured ? 'fill-current' : ''}`} />
                           </button>
@@ -662,11 +695,28 @@ export default function SellerDashboard() {
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Category</label>
-                  <Input 
+                  <select 
+                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
                     value={shopSettings.category || ''} 
                     onChange={e => setShopSettings({...shopSettings, category: e.target.value})} 
                     required 
-                  />
+                  >
+                    <option value="" disabled>Select a category</option>
+                    <option value="Fashion & Clothing">Fashion & Clothing</option>
+                    <option value="Electronics & Gadgets">Electronics & Gadgets</option>
+                    <option value="Groceries & Essentials">Groceries & Essentials</option>
+                    <option value="Pharmacy & Health">Pharmacy & Health</option>
+                    <option value="Beauty & Personal Care">Beauty & Personal Care</option>
+                    <option value="Home & Kitchen">Home & Kitchen</option>
+                    <option value="Jewelry & Accessories">Jewelry & Accessories</option>
+                    <option value="Footwear">Footwear</option>
+                    <option value="Mobile & Accessories">Mobile & Accessories</option>
+                    <option value="Furniture & Home Decor">Furniture & Home Decor</option>
+                    <option value="Toys, Kids & Baby">Toys, Kids & Baby</option>
+                    <option value="Sports & Outdoors">Sports & Outdoors</option>
+                    <option value="Afghan Specialties">Afghan Specialties</option>
+                    <option value="Tools & Hardware">Tools & Hardware</option>
+                  </select>
                 </div>
               </div>
 
