@@ -2,11 +2,11 @@ import { useState } from 'react';
 import { useDataStore } from '../store/useDataStore';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
-import { Users, Store, ShoppingBag, DollarSign, ShieldCheck } from 'lucide-react';
+import { Users, Store, ShoppingBag, DollarSign, ShieldCheck, Clock, XCircle } from 'lucide-react';
 import SEO from '../components/SEO';
 
 export default function AdminDashboard() {
-  const { products, shops } = useDataStore();
+  const { products, shops, updateShop } = useDataStore();
   const [activeTab, setActiveTab] = useState<'overview' | 'shops' | 'products'>('overview');
 
   const totalProducts = products.length;
@@ -14,6 +14,10 @@ export default function AdminDashboard() {
   // Mock stats
   const totalUsers = 1250;
   const totalRevenue = 450000;
+
+  const handleStatusChange = (shopId: string, newStatus: 'Pending' | 'Approved' | 'Rejected') => {
+    updateShop(shopId, { verificationStatus: newStatus });
+  };
 
   return (
     <div className="space-y-8">
@@ -99,12 +103,37 @@ export default function AdminDashboard() {
                       <td className="px-4 py-3">{shop.district}</td>
                       <td className="px-4 py-3">{shop.category}</td>
                       <td className="px-4 py-3">
-                        <span className="bg-green-100 text-green-800 px-2 py-1 rounded text-xs font-medium flex items-center w-max gap-1">
-                          <ShieldCheck className="w-3 h-3" /> Verified
-                        </span>
+                        {shop.verificationStatus === 'Approved' && (
+                          <span className="bg-green-100 text-green-800 px-2 py-1 rounded text-xs font-medium flex items-center w-max gap-1">
+                            <ShieldCheck className="w-3 h-3" /> Approved
+                          </span>
+                        )}
+                        {shop.verificationStatus === 'Pending' && (
+                          <span className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded text-xs font-medium flex items-center w-max gap-1">
+                            <Clock className="w-3 h-3" /> Pending
+                          </span>
+                        )}
+                        {shop.verificationStatus === 'Rejected' && (
+                          <span className="bg-red-100 text-red-800 px-2 py-1 rounded text-xs font-medium flex items-center w-max gap-1">
+                            <XCircle className="w-3 h-3" /> Rejected
+                          </span>
+                        )}
+                        {!shop.verificationStatus && (
+                          <span className="bg-gray-100 text-gray-800 px-2 py-1 rounded text-xs font-medium flex items-center w-max gap-1">
+                            Unknown
+                          </span>
+                        )}
                       </td>
                       <td className="px-4 py-3">
-                        <Button variant="outline" size="sm">Manage</Button>
+                        <select 
+                          className="text-sm border rounded p-1 bg-white"
+                          value={shop.verificationStatus || ''}
+                          onChange={(e) => handleStatusChange(shop.id, e.target.value as any)}
+                        >
+                          <option value="Pending">Pending</option>
+                          <option value="Approved">Approved</option>
+                          <option value="Rejected">Rejected</option>
+                        </select>
                       </td>
                     </tr>
                   ))}

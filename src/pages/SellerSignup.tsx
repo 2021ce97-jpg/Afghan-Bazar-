@@ -1,13 +1,21 @@
-import { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
-import { Store, User, MapPin, UploadCloud, CheckCircle2 } from 'lucide-react';
+import { Store, User, MapPin, UploadCloud, CheckCircle2, Mail } from 'lucide-react';
 
 export default function SellerSignup() {
   const { t } = useTranslation();
   const [step, setStep] = useState(1);
+  const [tazkiraFile, setTazkiraFile] = useState<File | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setTazkiraFile(e.target.files[0]);
+    }
+  };
+
   return (
     <div className="max-w-2xl mx-auto">
       <div className="text-center mb-8">
@@ -18,13 +26,14 @@ export default function SellerSignup() {
       {/* Progress Steps */}
       <div className="flex items-center justify-between mb-8 relative">
         <div className="absolute left-0 top-1/2 -translate-y-1/2 w-full h-1 bg-gray-200 -z-10"></div>
-        <div className="absolute left-0 top-1/2 -translate-y-1/2 h-1 bg-primary -z-10 transition-all" style={{ width: `${((step - 1) / 3) * 100}%` }}></div>
+        <div className="absolute left-0 top-1/2 -translate-y-1/2 h-1 bg-primary -z-10 transition-all" style={{ width: `${((step - 1) / 4) * 100}%` }}></div>
         
         {[
           { icon: User, label: 'Personal' },
           { icon: Store, label: 'Shop Details' },
           { icon: MapPin, label: 'Location' },
-          { icon: CheckCircle2, label: 'Verification' }
+          { icon: CheckCircle2, label: 'Verification' },
+          { icon: Mail, label: 'Email' }
         ].map((s, i) => (
           <div key={i} className="flex flex-col items-center gap-2">
             <div className={`w-10 h-10 rounded-full flex items-center justify-center border-2 transition-colors ${step > i ? 'bg-primary border-primary text-white' : 'bg-white border-gray-300 text-gray-400'}`}>
@@ -54,7 +63,7 @@ export default function SellerSignup() {
               <Input placeholder="+93 70 000 0000" />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1">Email (Optional)</label>
+              <label className="block text-sm font-medium mb-1">Email</label>
               <Input type="email" placeholder="ahmad@example.com" />
             </div>
             <Button className="w-full mt-6" onClick={() => setStep(2)}>Next Step</Button>
@@ -130,16 +139,64 @@ export default function SellerSignup() {
               <Input placeholder="e.g. 123456789" />
             </div>
             
-            <div className="border-2 border-dashed rounded-xl p-8 text-center hover:bg-gray-50 transition-colors cursor-pointer">
-              <UploadCloud className="w-10 h-10 text-gray-400 mx-auto mb-2" />
-              <p className="font-medium">Click to upload Tazkira Photo</p>
-              <p className="text-xs text-gray-500 mt-1">JPG, PNG up to 5MB</p>
+            <div 
+              className="border-2 border-dashed rounded-xl p-8 text-center hover:bg-gray-50 transition-colors cursor-pointer"
+              onClick={() => fileInputRef.current?.click()}
+            >
+              <input 
+                type="file" 
+                ref={fileInputRef} 
+                className="hidden" 
+                accept="image/jpeg, image/png"
+                onChange={handleFileChange}
+              />
+              {tazkiraFile ? (
+                <div className="space-y-2">
+                  <CheckCircle2 className="w-10 h-10 text-green-500 mx-auto mb-2" />
+                  <p className="font-medium text-green-600">File selected: {tazkiraFile.name}</p>
+                  <p className="text-xs text-gray-500 mt-1">Click to change</p>
+                </div>
+              ) : (
+                <>
+                  <UploadCloud className="w-10 h-10 text-gray-400 mx-auto mb-2" />
+                  <p className="font-medium">Click to upload Tazkira Photo</p>
+                  <p className="text-xs text-gray-500 mt-1">JPG, PNG up to 5MB</p>
+                </>
+              )}
             </div>
+            <p className="text-xs text-muted-foreground italic">* Uploaded images will be securely stored in Firebase Storage.</p>
 
             <div className="flex gap-4 mt-6">
               <Button variant="outline" className="w-full" onClick={() => setStep(3)}>Back</Button>
-              <Button className="w-full bg-green-600 hover:bg-green-700">Submit Application</Button>
+              <Button className="w-full bg-green-600 hover:bg-green-700" onClick={() => setStep(5)}>Submit Application</Button>
             </div>
+          </div>
+        )}
+
+        {step === 5 && (
+          <div className="space-y-4 animate-in fade-in text-center py-8">
+            <div className="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Mail className="w-8 h-8" />
+            </div>
+            <h2 className="text-2xl font-bold mb-2">Verify Your Email</h2>
+            <p className="text-muted-foreground mb-6">
+              We've sent a verification link to your email address. Please click the link to confirm your email and complete the signup process.
+            </p>
+            <Button className="w-full" onClick={() => setStep(6)}>I have verified my email (Simulate)</Button>
+            <Button variant="ghost" className="w-full mt-2">Resend Email</Button>
+          </div>
+        )}
+
+        {step === 6 && (
+          <div className="space-y-4 animate-in fade-in text-center py-8">
+            <div className="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
+              <CheckCircle2 className="w-8 h-8" />
+            </div>
+            <h2 className="text-2xl font-bold mb-2">Application Submitted!</h2>
+            <p className="text-muted-foreground mb-6">
+              Thank you for applying to join Bazar.af. Your application is currently under review and will be processed shortly. We will contact you via phone or email once your shop is approved.
+            </p>
+            <Button className="w-full" onClick={() => window.location.href = '/'}>Return to Home</Button>
           </div>
         )}
       </div>

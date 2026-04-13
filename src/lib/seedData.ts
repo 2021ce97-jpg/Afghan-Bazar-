@@ -8,7 +8,8 @@ export const MOCK_SHOPS = [
     district: 'Najeeb Zarab',
     description: 'Authentic Afghan handmade carpets and rugs.',
     rating: 4.8,
-    reviews: 124
+    reviews: 124,
+    verificationStatus: 'Approved' as 'Pending' | 'Approved' | 'Rejected'
   },
   { 
     id: '2', 
@@ -19,7 +20,8 @@ export const MOCK_SHOPS = [
     district: 'Parwan',
     description: 'Fresh fruits, vegetables, and daily groceries delivered fast.',
     rating: 4.5,
-    reviews: 89
+    reviews: 89,
+    verificationStatus: 'Approved' as 'Pending' | 'Approved' | 'Rejected'
   },
   { 
     id: '3', 
@@ -30,7 +32,8 @@ export const MOCK_SHOPS = [
     district: 'Central Bazaar',
     description: 'Premium quality pistachios, almonds, saffron, and more.',
     rating: 4.9,
-    reviews: 210
+    reviews: 210,
+    verificationStatus: 'Pending' as 'Pending' | 'Approved' | 'Rejected'
   },
   { 
     id: '4', 
@@ -41,7 +44,8 @@ export const MOCK_SHOPS = [
     district: 'Chicken Street',
     description: 'Traditional and modern Afghan clothing for men and women.',
     rating: 4.6,
-    reviews: 156
+    reviews: 156,
+    verificationStatus: 'Approved' as 'Pending' | 'Approved' | 'Rejected'
   },
   { 
     id: '5', 
@@ -52,7 +56,8 @@ export const MOCK_SHOPS = [
     district: 'Shar-e-Naw',
     description: 'Latest smartphones, accessories, and repair services.',
     rating: 4.3,
-    reviews: 67
+    reviews: 67,
+    verificationStatus: 'Rejected' as 'Pending' | 'Approved' | 'Rejected'
   },
   { 
     id: '6', 
@@ -63,7 +68,8 @@ export const MOCK_SHOPS = [
     district: 'Industrial Area',
     description: 'Genuine spare parts for Toyota, Corolla, and more.',
     rating: 4.7,
-    reviews: 92
+    reviews: 92,
+    verificationStatus: 'Pending' as 'Pending' | 'Approved' | 'Rejected'
   }
 ];
 

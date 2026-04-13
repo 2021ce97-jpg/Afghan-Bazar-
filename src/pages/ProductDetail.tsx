@@ -20,6 +20,9 @@ export default function ProductDetail() {
   const [selectedVariant, setSelectedVariant] = useState(product.variants?.[0] || null);
   const [isAdding, setIsAdding] = useState(false);
   const [quantity, setQuantity] = useState(1);
+  
+  const productImages = product.images && product.images.length > 0 ? product.images : [product.image];
+  const [selectedImage, setSelectedImage] = useState(productImages[0]);
 
   const currentPrice = selectedVariant ? selectedVariant.price : product.price;
   const currentStock = selectedVariant ? selectedVariant.stock : product.stock;
@@ -34,7 +37,7 @@ export default function ProductDetail() {
         title: product.title,
         price: currentPrice,
         quantity: quantity,
-        image: product.image,
+        image: productImages[0],
         variant: selectedVariant ? { size: selectedVariant.size, color: selectedVariant.color } : undefined
       });
       setIsAdding(false);
@@ -61,16 +64,31 @@ export default function ProductDetail() {
           description={`Buy ${product.title} for ${currentPrice.toLocaleString()} AFN from ${shop?.name || 'Bazar.af'}. High-quality product sourced directly from Kabul's local markets.`}
           image={product.image}
         />
-        <div className="aspect-square bg-gray-100 rounded-2xl overflow-hidden border relative group">
-          <img src={product.image} alt={product.title} className="w-full h-full object-cover" />
-          <Button 
-            variant="secondary" 
-            size="icon" 
-            className="absolute top-4 right-4 rounded-full shadow-md bg-white/90 hover:bg-white"
-            onClick={() => toggleWishlist(product.id)}
-          >
-            <Heart className={`w-5 h-5 ${isWishlisted ? 'fill-red-500 text-red-500' : 'text-gray-500'}`} />
-          </Button>
+        <div className="space-y-4">
+          <div className="aspect-square bg-gray-100 rounded-2xl overflow-hidden border relative group">
+            <img src={selectedImage} alt={product.title} className="w-full h-full object-cover" />
+            <Button 
+              variant="secondary" 
+              size="icon" 
+              className="absolute top-4 right-4 rounded-full shadow-md bg-white/90 hover:bg-white"
+              onClick={() => toggleWishlist(product.id)}
+            >
+              <Heart className={`w-5 h-5 ${isWishlisted ? 'fill-red-500 text-red-500' : 'text-gray-500'}`} />
+            </Button>
+          </div>
+          {productImages.length > 1 && (
+            <div className="flex gap-4 overflow-x-auto pb-2">
+              {productImages.map((img, idx) => (
+                <button 
+                  key={idx}
+                  onClick={() => setSelectedImage(img)}
+                  className={`w-20 h-20 rounded-xl overflow-hidden border-2 flex-shrink-0 transition-all ${selectedImage === img ? 'border-primary' : 'border-transparent opacity-70 hover:opacity-100'}`}
+                >
+                  <img src={img} alt={`${product.title} ${idx + 1}`} className="w-full h-full object-cover" />
+                </button>
+              ))}
+            </div>
+          )}
         </div>
         <div className="space-y-6">
           <div>

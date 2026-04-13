@@ -85,7 +85,7 @@ export default function ShopDetail() {
                   </Button>
                   <Link to={`/product/${product.id}`} className="flex-1 flex flex-col">
                     <div className="aspect-square overflow-hidden bg-gray-100">
-                      <img src={product.image} alt={product.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                      <img src={product.images?.[0] || product.image} alt={product.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                     </div>
                     <CardContent className="p-4 flex-1 flex flex-col justify-between">
                       <div>

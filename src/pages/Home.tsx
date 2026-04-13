@@ -109,7 +109,7 @@ export default function Home() {
                   </Button>
                   <Link to={`/product/${product.id}`} className="flex-1 flex flex-col">
                     <div className="aspect-square overflow-hidden bg-gray-100">
-                      <img src={product.image} alt={product.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                      <img src={product.images?.[0] || product.image} alt={product.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                     </div>
                     <CardContent className="p-3 flex-1 flex flex-col justify-between">
                       <h3 className="font-medium text-sm line-clamp-2 mb-2 group-hover:text-primary transition-colors">{product.title}</h3>
