@@ -2,12 +2,13 @@ import { useState } from 'react';
 import { useDataStore } from '../store/useDataStore';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
-import { Users, Store, ShoppingBag, DollarSign, ShieldCheck, Clock, XCircle } from 'lucide-react';
+import { Users, Store, ShoppingBag, DollarSign, ShieldCheck, Clock, XCircle, FileImage, X } from 'lucide-react';
 import SEO from '../components/SEO';
 
 export default function AdminDashboard() {
   const { products, shops, updateShop } = useDataStore();
   const [activeTab, setActiveTab] = useState<'overview' | 'shops' | 'products'>('overview');
+  const [selectedTazkira, setSelectedTazkira] = useState<string | null>(null);
 
   const totalProducts = products.length;
   const totalShops = shops.length;
@@ -23,6 +24,33 @@ export default function AdminDashboard() {
     <div className="space-y-8">
       <SEO title="Admin Dashboard" description="Bazar.af Admin Control Panel" />
       
+      {/* Tazkira Modal */}
+      {selectedTazkira && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4">
+          <div className="bg-white rounded-xl max-w-3xl w-full overflow-hidden relative">
+            <div className="flex justify-between items-center p-4 border-b">
+              <h3 className="font-bold text-lg">Tazkira (National ID) Document</h3>
+              <button 
+                onClick={() => setSelectedTazkira(null)}
+                className="p-1 hover:bg-gray-100 rounded-full transition-colors"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+            <div className="p-4 flex justify-center bg-gray-100">
+              <img 
+                src={selectedTazkira} 
+                alt="Tazkira Document" 
+                className="max-h-[70vh] object-contain rounded-md shadow-sm"
+              />
+            </div>
+            <div className="p-4 border-t flex justify-end">
+              <Button onClick={() => setSelectedTazkira(null)}>Close</Button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h1 className="text-3xl font-bold">Admin Control Panel</h1>
@@ -124,9 +152,9 @@ export default function AdminDashboard() {
                           </span>
                         )}
                       </td>
-                      <td className="px-4 py-3">
+                      <td className="px-4 py-3 flex items-center gap-2">
                         <select 
-                          className="text-sm border rounded p-1 bg-white"
+                          className="text-sm border rounded p-1.5 bg-white"
                           value={shop.verificationStatus || ''}
                           onChange={(e) => handleStatusChange(shop.id, e.target.value as any)}
                         >
@@ -134,6 +162,16 @@ export default function AdminDashboard() {
                           <option value="Approved">Approved</option>
                           <option value="Rejected">Rejected</option>
                         </select>
+                        {shop.verificationStatus === 'Pending' && (
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            className="flex items-center gap-1 h-8"
+                            onClick={() => setSelectedTazkira(shop.tazkiraUrl || 'https://picsum.photos/seed/tazkira/800/600')}
+                          >
+                            <FileImage className="w-3 h-3" /> View Tazkira
+                          </Button>
+                        )}
                       </td>
                     </tr>
                   ))}

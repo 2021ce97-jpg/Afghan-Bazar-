@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useDataStore } from '../store/useDataStore';
 import { Card, CardContent } from '../components/ui/card';
-import { Star, MapPin } from 'lucide-react';
+import { Star, MapPin, Clock, Truck, AlertCircle } from 'lucide-react';
 import SEO from '../components/SEO';
 
 export default function ShopList() {
@@ -21,7 +21,6 @@ export default function ShopList() {
         <p className="text-muted-foreground">Browse all verified shops in Kabul.</p>
       </div>
 
-
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {shops.map((shop, i) => (
           <motion.div
@@ -31,12 +30,28 @@ export default function ShopList() {
             transition={{ delay: i * 0.1 }}
           >
             <Link to={`/seller/${shop.id}`}>
-              <Card className="overflow-hidden hover:shadow-lg transition-all group cursor-pointer h-full flex flex-col">
+              <Card className="overflow-hidden hover:shadow-lg transition-all group cursor-pointer h-full flex flex-col relative">
+                <div className="absolute top-2 right-2 z-10 flex flex-col gap-1 items-end">
+                  {shop.isOpen === false ? (
+                    <span className="bg-red-500 text-white px-2 py-1 rounded-md text-[10px] font-bold flex items-center gap-1 shadow-sm">
+                      <AlertCircle className="w-3 h-3" /> CLOSED
+                    </span>
+                  ) : (
+                    <span className="bg-green-500 text-white px-2 py-1 rounded-md text-[10px] font-bold flex items-center gap-1 shadow-sm">
+                      <Clock className="w-3 h-3" /> OPEN
+                    </span>
+                  )}
+                  {shop.deliveryAvailable !== false && (
+                    <span className="bg-blue-500 text-white px-2 py-1 rounded-md text-[10px] font-bold flex items-center gap-1 shadow-sm">
+                      <Truck className="w-3 h-3" /> DELIVERY
+                    </span>
+                  )}
+                </div>
                 <div className="relative aspect-[16/9] overflow-hidden">
                   <img 
                     src={shop.image} 
                     alt={shop.name} 
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                    className={`w-full h-full object-cover transition-transform duration-500 ${shop.isOpen === false ? 'grayscale opacity-80' : 'group-hover:scale-105'}`} 
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                   <div className="absolute bottom-4 left-4 flex items-center gap-3">

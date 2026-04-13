@@ -14,8 +14,13 @@ export type Product = {
   rating?: number;
   reviews?: number;
   variants?: any[];
+  isFeatured?: boolean;
 };
-export type Shop = typeof MOCK_SHOPS[0];
+export type Shop = typeof MOCK_SHOPS[0] & {
+  isOpen?: boolean;
+  deliveryAvailable?: boolean;
+  tazkiraUrl?: string;
+};
 
 interface DataState {
   products: Product[];

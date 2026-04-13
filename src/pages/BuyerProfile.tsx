@@ -1,7 +1,8 @@
 import { useAuthStore } from '../store/useAuthStore';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
-import { Package, MapPin, CreditCard, Settings } from 'lucide-react';
+import { Package, MapPin, CreditCard, Settings, ShoppingBag } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import SEO from '../components/SEO';
 
 export default function BuyerProfile() {
@@ -64,8 +65,17 @@ export default function BuyerProfile() {
               <CardTitle>Recent Orders</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-center py-8 text-gray-500 border border-dashed rounded-lg">
-                You haven't placed any orders yet.
+              <div className="text-center py-12 px-4 border-2 border-dashed border-gray-200 rounded-xl bg-gray-50 flex flex-col items-center justify-center">
+                <div className="bg-white p-4 rounded-full shadow-sm mb-4">
+                  <ShoppingBag className="w-8 h-8 text-gray-400" />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-1">No orders yet</h3>
+                <p className="text-gray-500 mb-6 max-w-sm text-sm">
+                  You haven't placed any orders yet. Start exploring our marketplace to find great products from local sellers.
+                </p>
+                <Button asChild>
+                  <Link to="/">Start Shopping</Link>
+                </Button>
               </div>
             </CardContent>
           </Card>
