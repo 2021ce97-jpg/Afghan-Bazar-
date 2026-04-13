@@ -15,21 +15,28 @@ import ShopDetail from './pages/ShopDetail';
 import ProductDetail from './pages/ProductDetail';
 import SellerDashboard from './pages/SellerDashboard';
 import SellerSignup from './pages/SellerSignup';
-import SellerLogin from './pages/SellerLogin';
+import Login from './pages/Login';
 import AdminDashboard from './pages/AdminDashboard';
 import BuyerProfile from './pages/BuyerProfile';
 import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
 import Wishlist from './pages/Wishlist';
 import Navbar from './components/Navbar';
+import VoiceAssistant from './components/VoiceAssistant';
 import { useAuthStore } from './store/useAuthStore';
 
 // Protected Route Component
 const ProtectedRoute = ({ children, allowedRoles }: { children: React.ReactNode, allowedRoles: string[] }) => {
-  const { role } = useAuthStore();
+  const { role, user } = useAuthStore();
+  
+  if (!user || role === 'guest') {
+    return <Navigate to="/login" replace />;
+  }
+  
   if (!allowedRoles.includes(role)) {
     return <Navigate to="/" replace />;
   }
+  
   return <>{children}</>;
 };
 
@@ -53,8 +60,10 @@ export default function App() {
               <Route path="/seller/:shopId" element={<ShopDetail />} />
               <Route path="/product/:productId" element={<ProductDetail />} />
               
+              {/* Auth Routes */}
+              <Route path="/login" element={<Login />} />
+              
               {/* Seller Routes */}
-              <Route path="/seller/login" element={<SellerLogin />} />
               <Route path="/seller/signup" element={<SellerSignup />} />
               <Route path="/seller/dashboard/*" element={
                 <ProtectedRoute allowedRoles={['seller', 'admin']}>
@@ -81,6 +90,7 @@ export default function App() {
               <Route path="/wishlist" element={<Wishlist />} />
             </Routes>
           </main>
+          <VoiceAssistant />
           <footer className="bg-white border-t py-8 mt-auto">
             <div className="max-w-7xl mx-auto px-4 text-center text-gray-500 text-sm">
               &copy; {new Date().getFullYear()} Bazar.af - Kabul's Trusted Local Marketplace

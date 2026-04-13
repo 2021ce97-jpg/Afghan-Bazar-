@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { ShoppingCart, Search, Menu, Store, Heart, User, X } from 'lucide-react';
+import { ShoppingCart, Search, Menu, Store, Heart, User, X, LogOut } from 'lucide-react';
 import { useCartStore } from '../store/useCartStore';
 import { useWishlistStore } from '../store/useWishlistStore';
 import { useAuthStore } from '../store/useAuthStore';
@@ -131,9 +131,9 @@ export default function Navbar() {
             </div>
             
             {role === 'guest' && (
-              <Link to="/seller/login">
+              <Link to="/login">
                 <Button variant="outline" size="sm" className="hidden lg:flex">
-                  Seller Login
+                  Login / Register
                 </Button>
               </Link>
             )}
@@ -168,12 +168,17 @@ export default function Navbar() {
                     {user.name.split(' ')[0]}
                   </Button>
                 </Link>
+                <Button variant="ghost" size="icon" onClick={() => { logout(); navigate('/'); }} title="Logout">
+                  <LogOut className="w-4 h-4 text-red-500" />
+                </Button>
               </div>
             ) : (
               <div className="flex items-center gap-2">
-                <Button size="sm" className="hidden sm:flex" onClick={() => loginAsBuyer('Guest Buyer', '+93 700 000 000')}>
-                  {t('common.login')}
-                </Button>
+                <Link to="/login">
+                  <Button size="sm" className="hidden sm:flex">
+                    {t('common.login')}
+                  </Button>
+                </Link>
                 {/* Hidden admin login for testing */}
                 <button className="w-2 h-2 opacity-0" onClick={loginAsAdmin}></button>
               </div>
@@ -212,12 +217,9 @@ export default function Navbar() {
                 </>
               ) : (
                 <>
-                  <Button className="w-full" onClick={() => { loginAsBuyer('Guest Buyer', '+93 700 000 000'); setIsMobileMenuOpen(false); }}>
-                    {t('common.login')}
-                  </Button>
-                  <Link to="/seller/login" onClick={() => setIsMobileMenuOpen(false)}>
-                    <Button variant="outline" className="w-full">
-                      Seller Login
+                  <Link to="/login" onClick={() => setIsMobileMenuOpen(false)}>
+                    <Button className="w-full">
+                      {t('common.login')}
                     </Button>
                   </Link>
                 </>
