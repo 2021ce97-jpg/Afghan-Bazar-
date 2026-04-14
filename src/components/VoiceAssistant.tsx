@@ -73,7 +73,6 @@ export default function VoiceAssistant() {
       setIsRecording(true);
       
     } catch (error: any) {
-      console.error('Error accessing microphone:', error);
       const errorMessage = error instanceof Error ? error.message : String(error);
       
       if (error.name === 'NotFoundError' || errorMessage.includes('Requested device not found')) {

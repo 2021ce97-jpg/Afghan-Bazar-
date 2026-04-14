@@ -1,6 +1,7 @@
+import { useState, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useDataStore } from '../store/useDataStore';
-import { MapPin, Star, Phone, MessageCircle, Heart, Clock, Truck, AlertCircle } from 'lucide-react';
+import { MapPin, Star, Phone, MessageCircle, Heart, Clock, Truck, AlertCircle, ShieldCheck, Clock3 } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
 import { useWishlistStore } from '../store/useWishlistStore';
@@ -12,8 +13,24 @@ export default function ShopDetail() {
   const { products, shops } = useDataStore();
   const shop = shops.find(s => s.id === shopId) || shops[0];
   const shopProducts = products.filter(p => p.shopId === shop.id);
-  const featuredProducts = shopProducts.filter(p => p.isFeatured);
-  const regularProducts = shopProducts.filter(p => !p.isFeatured);
+  
+  const [sortBy, setSortBy] = useState('default');
+  
+  const sortedProducts = useMemo(() => {
+    let result = [...shopProducts];
+    if (sortBy === 'price-asc') {
+      result.sort((a, b) => a.price - b.price);
+    } else if (sortBy === 'price-desc') {
+      result.sort((a, b) => b.price - a.price);
+    } else if (sortBy === 'rating-desc') {
+      result.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+    }
+    return result;
+  }, [shopProducts, sortBy]);
+
+  const featuredProducts = sortBy === 'default' ? sortedProducts.filter(p => p.isFeatured) : [];
+  const regularProducts = sortBy === 'default' ? sortedProducts.filter(p => !p.isFeatured) : sortedProducts;
+
   const { items: wishlistItems, toggleItem: toggleWishlist } = useWishlistStore();
   
   const breadcrumbItems = [
@@ -60,7 +77,17 @@ export default function ShopDetail() {
               <div className="flex flex-wrap items-center gap-4 mt-2 text-sm text-gray-600">
                 <span className="flex items-center gap-1"><MapPin className="w-4 h-4" /> {shop.district}, Kabul</span>
                 <span className="flex items-center gap-1 text-amber-500 font-medium"><Star className="w-4 h-4 fill-current" /> {shop.rating} ({shop.reviews} reviews)</span>
-                <span className="bg-green-100 text-green-800 px-2 py-0.5 rounded-full font-medium text-xs">Verified Seller</span>
+                
+                {shop.verificationStatus === 'Approved' || !shop.verificationStatus ? (
+                  <span className="flex items-center gap-1 bg-green-100 text-green-800 px-2 py-0.5 rounded-full font-medium text-xs">
+                    <ShieldCheck className="w-3 h-3" /> Verified Seller
+                  </span>
+                ) : (
+                  <span className="flex items-center gap-1 bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full font-medium text-xs">
+                    <Clock3 className="w-3 h-3" /> Verification Pending
+                  </span>
+                )}
+
                 {shop.deliveryAvailable !== false && (
                   <span className="flex items-center gap-1 text-blue-600 font-medium bg-blue-50 px-2 py-0.5 rounded-full text-xs">
                     <Truck className="w-3 h-3" /> Delivery Available
@@ -90,6 +117,20 @@ export default function ShopDetail() {
           </div>
         </div>
       )}
+
+      {/* Product Sorting */}
+      <div className="flex justify-end mb-4">
+        <select 
+          className="p-2 border rounded-md bg-white text-sm shadow-sm"
+          value={sortBy}
+          onChange={(e) => setSortBy(e.target.value)}
+        >
+          <option value="default">Default Sorting</option>
+          <option value="price-asc">Price: Low to High</option>
+          <option value="price-desc">Price: High to Low</option>
+          <option value="rating-desc">Highest Rated</option>
+        </select>
+      </div>
 
       {/* Featured Products */}
       {featuredProducts.length > 0 && (
@@ -140,7 +181,9 @@ export default function ShopDetail() {
 
       {/* All Products */}
       <div>
-        <h2 className="text-2xl font-bold mb-6">{featuredProducts.length > 0 ? 'All Products' : 'Products'}</h2>
+        <h2 className="text-2xl font-bold mb-6">
+          {sortBy !== 'default' ? 'All Products' : (featuredProducts.length > 0 ? 'More Products' : 'Products')}
+        </h2>
         {regularProducts.length > 0 ? (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
             {regularProducts.map(product => {

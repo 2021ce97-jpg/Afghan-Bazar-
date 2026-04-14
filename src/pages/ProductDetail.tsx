@@ -4,7 +4,7 @@ import { useCartStore } from '../store/useCartStore';
 import { useWishlistStore } from '../store/useWishlistStore';
 import { useDataStore } from '../store/useDataStore';
 import { Button } from '../components/ui/button';
-import { ShoppingCart, Store, ShieldCheck, Heart, Loader2 } from 'lucide-react';
+import { ShoppingCart, Store, ShieldCheck, Heart, Loader2, Check } from 'lucide-react';
 import SEO from '../components/SEO';
 import Breadcrumbs from '../components/Breadcrumbs';
 
@@ -19,6 +19,7 @@ export default function ProductDetail() {
 
   const [selectedVariant, setSelectedVariant] = useState(product.variants?.[0] || null);
   const [isAdding, setIsAdding] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
   const [quantity, setQuantity] = useState(1);
   
   const productImages = product.images && product.images.length > 0 ? product.images : [product.image];
@@ -41,6 +42,8 @@ export default function ProductDetail() {
         variant: selectedVariant ? { size: selectedVariant.size, color: selectedVariant.color } : undefined
       });
       setIsAdding(false);
+      setShowSuccess(true);
+      setTimeout(() => setShowSuccess(false), 2000);
     }, 600); // Simulate network delay
   };
 
@@ -190,15 +193,17 @@ export default function ProductDetail() {
             <Button 
               size="lg" 
               onClick={handleAddToCart} 
-              className="w-full gap-2 text-lg h-14" 
-              disabled={currentStock === 0 || isAdding}
+              className={`w-full gap-2 text-lg h-14 transition-all duration-300 ${showSuccess ? 'bg-green-600 hover:bg-green-700' : ''}`} 
+              disabled={currentStock === 0 || isAdding || showSuccess}
             >
               {isAdding ? (
                 <Loader2 className="w-5 h-5 animate-spin" />
+              ) : showSuccess ? (
+                <Check className="w-5 h-5" />
               ) : (
                 <ShoppingCart className="w-5 h-5" />
               )}
-              {isAdding ? 'Adding...' : 'Add to Cart'}
+              {isAdding ? 'Adding...' : showSuccess ? 'Added to Cart!' : 'Add to Cart'}
             </Button>
           </div>
 

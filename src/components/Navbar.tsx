@@ -1,11 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { ShoppingCart, Search, Menu, Store, Heart, User, X, LogOut } from 'lucide-react';
+import { ShoppingCart, Search, Menu, Store, Heart, User, X, LogOut, Filter } from 'lucide-react';
 import { useCartStore } from '../store/useCartStore';
 import { useWishlistStore } from '../store/useWishlistStore';
 import { useAuthStore } from '../store/useAuthStore';
 import { useDataStore } from '../store/useDataStore';
+import { useCurrencyStore } from '../store/useCurrencyStore';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 
@@ -16,6 +17,7 @@ export default function Navbar() {
   const wishlistItems = useWishlistStore((state) => state.items);
   const { user, role, loginAsBuyer, loginAsAdmin, logout } = useAuthStore();
   const { products, shops } = useDataStore();
+  const { currency, setCurrency } = useCurrencyStore();
 
   const cartCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
   const wishlistCount = wishlistItems.length;
@@ -23,6 +25,7 @@ export default function Navbar() {
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [searchFilter, setSearchFilter] = useState<'all' | 'products' | 'shops'>('all');
   const searchRef = useRef<HTMLDivElement>(null);
 
   const changeLanguage = (lng: string) => {
@@ -40,8 +43,8 @@ export default function Navbar() {
   }, []);
 
   const searchResults = {
-    products: products.filter(p => p.title.toLowerCase().includes(searchQuery.toLowerCase())).slice(0, 3),
-    shops: shops.filter(s => s.name.toLowerCase().includes(searchQuery.toLowerCase())).slice(0, 2)
+    products: products.filter(p => p.title.toLowerCase().includes(searchQuery.toLowerCase())).slice(0, 5),
+    shops: shops.filter(s => s.name.toLowerCase().includes(searchQuery.toLowerCase())).slice(0, 3)
   };
 
   return (
@@ -59,12 +62,12 @@ export default function Navbar() {
           </div>
 
           <div className="flex-1 max-w-2xl hidden md:flex items-center space-x-2 relative" ref={searchRef}>
-            <div className="relative w-full">
+            <div className="relative w-full flex items-center">
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
                 type="search"
                 placeholder={t('common.search')}
-                className="w-full pl-9 bg-gray-100 border-transparent focus-visible:bg-white"
+                className="w-full pl-9 pr-24 bg-gray-100 border-transparent focus-visible:bg-white"
                 value={searchQuery}
                 onChange={(e) => {
                   setSearchQuery(e.target.value);
@@ -72,12 +75,26 @@ export default function Navbar() {
                 }}
                 onFocus={() => setIsSearchOpen(true)}
               />
+              <div className="absolute right-1 top-1 bottom-1 flex items-center bg-gray-200 rounded text-xs px-2">
+                <select 
+                  className="bg-transparent outline-none cursor-pointer text-gray-600"
+                  value={searchFilter}
+                  onChange={(e) => setSearchFilter(e.target.value as any)}
+                >
+                  <option value="all">All</option>
+                  <option value="products">Products</option>
+                  <option value="shops">Shops</option>
+                </select>
+              </div>
             </div>
             {isSearchOpen && searchQuery.length > 1 && (
-              <div className="absolute top-full left-0 right-0 mt-2 bg-white border rounded-lg shadow-lg overflow-hidden z-50">
-                {searchResults.products.length > 0 && (
+              <div className="absolute top-full left-0 right-0 mt-2 bg-white border rounded-lg shadow-lg overflow-hidden z-50 max-h-[80vh] overflow-y-auto">
+                {(searchFilter === 'all' || searchFilter === 'products') && searchResults.products.length > 0 && (
                   <div className="p-2">
-                    <h4 className="text-xs font-semibold text-gray-500 uppercase px-2 mb-1">Products</h4>
+                    <h4 className="text-xs font-semibold text-gray-500 uppercase px-2 mb-1 flex items-center justify-between">
+                      <span>Products</span>
+                      <Link to={`/shops`} className="text-[10px] text-primary hover:underline" onClick={() => setIsSearchOpen(false)}>View all</Link>
+                    </h4>
                     {searchResults.products.map(product => (
                       <div 
                         key={product.id} 
@@ -97,9 +114,12 @@ export default function Navbar() {
                     ))}
                   </div>
                 )}
-                {searchResults.shops.length > 0 && (
-                  <div className="p-2 border-t">
-                    <h4 className="text-xs font-semibold text-gray-500 uppercase px-2 mb-1">Shops</h4>
+                {(searchFilter === 'all' || searchFilter === 'shops') && searchResults.shops.length > 0 && (
+                  <div className={`p-2 ${searchFilter === 'all' && searchResults.products.length > 0 ? 'border-t' : ''}`}>
+                    <h4 className="text-xs font-semibold text-gray-500 uppercase px-2 mb-1 flex items-center justify-between">
+                      <span>Shops</span>
+                      <Link to={`/shops`} className="text-[10px] text-primary hover:underline" onClick={() => setIsSearchOpen(false)}>View all</Link>
+                    </h4>
                     {searchResults.shops.map(shop => (
                       <div 
                         key={shop.id} 
@@ -111,12 +131,17 @@ export default function Navbar() {
                         }}
                       >
                         <img src={shop.logo} alt={shop.name} className="w-8 h-8 object-cover rounded-full" />
-                        <p className="text-sm font-medium">{shop.name}</p>
+                        <div className="flex-1">
+                          <p className="text-sm font-medium">{shop.name}</p>
+                          <p className="text-xs text-gray-500">{shop.category}</p>
+                        </div>
+                        {shop.isOpen === false && <span className="text-[10px] bg-red-100 text-red-600 px-1.5 py-0.5 rounded">Closed</span>}
                       </div>
                     ))}
                   </div>
                 )}
-                {searchResults.products.length === 0 && searchResults.shops.length === 0 && (
+                {((searchFilter === 'all' || searchFilter === 'products') && searchResults.products.length === 0) && 
+                 ((searchFilter === 'all' || searchFilter === 'shops') && searchResults.shops.length === 0) && (
                   <div className="p-4 text-center text-sm text-gray-500">No results found</div>
                 )}
               </div>
@@ -124,10 +149,10 @@ export default function Navbar() {
           </div>
 
           <div className="flex items-center gap-2 sm:gap-4">
-            <div className="hidden sm:flex items-center gap-1">
-              <Button variant="ghost" size="sm" onClick={() => changeLanguage('fa')} className={i18n.language === 'fa' ? 'font-bold' : ''}>FA</Button>
-              <Button variant="ghost" size="sm" onClick={() => changeLanguage('ps')} className={i18n.language === 'ps' ? 'font-bold' : ''}>PS</Button>
-              <Button variant="ghost" size="sm" onClick={() => changeLanguage('en')} className={i18n.language === 'en' ? 'font-bold' : ''}>EN</Button>
+            <div className="hidden sm:flex items-center gap-1 border-r pr-2 mr-1">
+              <Button variant="ghost" size="sm" onClick={() => changeLanguage('fa')} className={`px-2 ${i18n.language === 'fa' ? 'font-bold text-primary' : ''}`}>FA</Button>
+              <Button variant="ghost" size="sm" onClick={() => changeLanguage('ps')} className={`px-2 ${i18n.language === 'ps' ? 'font-bold text-primary' : ''}`}>PS</Button>
+              <Button variant="ghost" size="sm" onClick={() => changeLanguage('en')} className={`px-2 ${i18n.language === 'en' ? 'font-bold text-primary' : ''}`}>EN</Button>
             </div>
             
             {role === 'guest' && (
@@ -198,10 +223,10 @@ export default function Navbar() {
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
-            <div className="flex justify-center gap-4">
-              <Button variant="ghost" size="sm" onClick={() => changeLanguage('fa')} className={i18n.language === 'fa' ? 'font-bold' : ''}>FA</Button>
-              <Button variant="ghost" size="sm" onClick={() => changeLanguage('ps')} className={i18n.language === 'ps' ? 'font-bold' : ''}>PS</Button>
-              <Button variant="ghost" size="sm" onClick={() => changeLanguage('en')} className={i18n.language === 'en' ? 'font-bold' : ''}>EN</Button>
+            <div className="flex justify-center gap-4 border-b pb-2">
+              <Button variant="ghost" size="sm" onClick={() => changeLanguage('fa')} className={i18n.language === 'fa' ? 'font-bold text-primary' : ''}>FA</Button>
+              <Button variant="ghost" size="sm" onClick={() => changeLanguage('ps')} className={i18n.language === 'ps' ? 'font-bold text-primary' : ''}>PS</Button>
+              <Button variant="ghost" size="sm" onClick={() => changeLanguage('en')} className={i18n.language === 'en' ? 'font-bold text-primary' : ''}>EN</Button>
             </div>
             <div className="flex flex-col gap-2 px-2">
               {user ? (

@@ -144,6 +144,11 @@ export default function Home() {
                 transition={{ delay: i * 0.05 }}
               >
                 <Card className="overflow-hidden hover:shadow-md transition-shadow h-full flex flex-col group border-transparent hover:border-gray-200 relative">
+                  {product.isFeatured && (
+                    <div className="absolute top-2 left-2 z-10 bg-amber-500 text-white text-[10px] font-bold px-2 py-1 rounded-md shadow-sm flex items-center gap-1">
+                      <Sparkles className="w-3 h-3" /> FEATURED
+                    </div>
+                  )}
                   <Button 
                     variant="ghost" 
                     size="icon" 

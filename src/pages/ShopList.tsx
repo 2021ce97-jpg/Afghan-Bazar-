@@ -3,26 +3,80 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useDataStore } from '../store/useDataStore';
 import { Card, CardContent } from '../components/ui/card';
-import { Star, MapPin, Clock, Truck, AlertCircle, X } from 'lucide-react';
+import { Star, MapPin, Clock, Truck, AlertCircle, X, Filter } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import SEO from '../components/SEO';
+import { useState, useMemo } from 'react';
 
 export default function ShopList() {
   const { t } = useTranslation();
   const { shops } = useDataStore();
   const [searchParams, setSearchParams] = useSearchParams();
-  const categoryFilter = searchParams.get('category');
-
-  const filteredShops = categoryFilter 
-    ? shops.filter(s => s.category === categoryFilter)
-    : shops;
   
+  const categoryFilter = searchParams.get('category') || '';
+  const districtFilter = searchParams.get('district') || '';
+  const statusFilter = searchParams.get('status') || '';
+  const sortBy = searchParams.get('sort') || 'rating-desc';
+
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+
+  const categories = Array.from(new Set(shops.map(s => s.category)));
+  const districts = Array.from(new Set(shops.map(s => s.district)));
+
+  const updateFilter = (key: string, value: string) => {
+    const newParams = new URLSearchParams(searchParams);
+    if (value) {
+      newParams.set(key, value);
+    } else {
+      newParams.delete(key);
+    }
+    setSearchParams(newParams);
+  };
+
+  const clearFilters = () => {
+    setSearchParams({});
+  };
+
+  const filteredShops = useMemo(() => {
+    let result = shops;
+
+    if (categoryFilter) {
+      result = result.filter(s => s.category === categoryFilter);
+    }
+    if (districtFilter) {
+      result = result.filter(s => s.district === districtFilter);
+    }
+    if (statusFilter) {
+      result = result.filter(s => s.verificationStatus === statusFilter);
+    }
+
+    result = [...result].sort((a, b) => {
+      switch (sortBy) {
+        case 'rating-desc':
+          return (b.rating || 0) - (a.rating || 0);
+        case 'rating-asc':
+          return (a.rating || 0) - (b.rating || 0);
+        case 'name-asc':
+          return a.name.localeCompare(b.name);
+        case 'name-desc':
+          return b.name.localeCompare(a.name);
+        default:
+          return 0;
+      }
+    });
+
+    return result;
+  }, [shops, categoryFilter, districtFilter, statusFilter, sortBy]);
+
+  const activeFilterCount = (categoryFilter ? 1 : 0) + (districtFilter ? 1 : 0) + (statusFilter ? 1 : 0);
+
   return (
     <div className="space-y-8">
       <SEO 
         title={categoryFilter ? `${categoryFilter} Shops in Kabul` : "All Shops in Kabul"} 
         description="Browse all verified shops in Kabul. Find the best local stores for carpets, groceries, dry fruits, fashion, and electronics."
       />
+      
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold mb-2">
@@ -35,26 +89,89 @@ export default function ShopList() {
           </p>
         </div>
         
-        {categoryFilter && (
+        <div className="flex items-center gap-2">
           <Button 
             variant="outline" 
-            onClick={() => setSearchParams({})}
+            onClick={() => setIsFilterOpen(!isFilterOpen)}
             className="flex items-center gap-2"
           >
-            <X className="w-4 h-4" /> Clear Filter
+            <Filter className="w-4 h-4" /> 
+            Filters {activeFilterCount > 0 && <span className="bg-primary text-primary-foreground rounded-full w-5 h-5 flex items-center justify-center text-xs">{activeFilterCount}</span>}
           </Button>
-        )}
+          
+          {activeFilterCount > 0 && (
+            <Button 
+              variant="ghost" 
+              onClick={clearFilters}
+              className="flex items-center gap-2 text-red-500 hover:text-red-600 hover:bg-red-50"
+            >
+              <X className="w-4 h-4" /> Clear
+            </Button>
+          )}
+        </div>
       </div>
+
+      {isFilterOpen && (
+        <div className="bg-white p-4 rounded-xl border shadow-sm grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div>
+            <label className="block text-sm font-medium mb-1">Category</label>
+            <select 
+              className="w-full p-2 border rounded-md bg-transparent"
+              value={categoryFilter}
+              onChange={(e) => updateFilter('category', e.target.value)}
+            >
+              <option value="">All Categories</option>
+              {categories.map(c => <option key={c} value={c}>{c}</option>)}
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">District</label>
+            <select 
+              className="w-full p-2 border rounded-md bg-transparent"
+              value={districtFilter}
+              onChange={(e) => updateFilter('district', e.target.value)}
+            >
+              <option value="">All Districts</option>
+              {districts.map(d => <option key={d} value={d}>{d}</option>)}
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Status</label>
+            <select 
+              className="w-full p-2 border rounded-md bg-transparent"
+              value={statusFilter}
+              onChange={(e) => updateFilter('status', e.target.value)}
+            >
+              <option value="">All Statuses</option>
+              <option value="Approved">Verified</option>
+              <option value="Pending">Pending</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Sort By</label>
+            <select 
+              className="w-full p-2 border rounded-md bg-transparent"
+              value={sortBy}
+              onChange={(e) => updateFilter('sort', e.target.value)}
+            >
+              <option value="rating-desc">Highest Rating</option>
+              <option value="rating-asc">Lowest Rating</option>
+              <option value="name-asc">Name (A-Z)</option>
+              <option value="name-desc">Name (Z-A)</option>
+            </select>
+          </div>
+        </div>
+      )}
 
       {filteredShops.length === 0 ? (
         <div className="text-center py-16 bg-white rounded-xl border border-dashed">
-          <p className="text-gray-500 text-lg">No shops found in this category.</p>
+          <p className="text-gray-500 text-lg">No shops found matching your filters.</p>
           <Button 
             variant="link" 
-            onClick={() => setSearchParams({})}
+            onClick={clearFilters}
             className="mt-2"
           >
-            View all shops
+            Clear all filters
           </Button>
         </div>
       ) : (
